@@ -201,16 +201,18 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     private void write(String cmd) {
-        if (mBos != null && mSocket.isConnected()) {
-            try {
-                mBos.write(cmd.getBytes());
-                mBos.flush();
-            } catch (Exception e) {
-                Log.e(ControlActivity.class.getSimpleName(), "error write:: " + e.getMessage());
+        new Thread(() -> {
+            if (mBos != null && mSocket.isConnected()) {
+                try {
+                    mBos.write(cmd.getBytes());
+                    mBos.flush();
+                } catch (Exception e) {
+                    Log.e(ControlActivity.class.getSimpleName(), "error write:: " + e.getMessage());
+                }
+            } else {
+                Log.d(TAG, "mBos = null or mSocket is closed");
             }
-        } else {
-            Log.d(TAG, "mBos = null or mSocket is closed");
-        }
+        }).start();
     }
 
 }
